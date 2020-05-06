@@ -15,7 +15,7 @@ class TasksController extends Controller
      */
     public function index() // getでTasks/にアクセスされた場合の「一覧表示処理」
     {
-        $Tasks =Task::all();
+        $tasks =Task::all();
         
         return view('tasks.index', [
             'tasks' => $tasks,
@@ -29,7 +29,7 @@ class TasksController extends Controller
     public function create()  // getで/createにアクセスされた場合の「新規登録画面表示処理」
      
     {
-         $taske = new Task;
+         $task = new Task;
 
         return view('tasks.create', [
             'task' => $task,

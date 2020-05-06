@@ -9,7 +9,7 @@
 
     <h1タスク一覧</h1>
 
-    @if (count($Tasks) > 0)
+    @if (count($tasks) > 0)
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -18,10 +18,10 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($Tasks as $Task)
+                @foreach ($tasks as $task)
                 <tr>
-                    <td>{{ $Task->id }}</td>
-                    <td>{{ $Task->content }}</td>
+                    <td>{{ $task->id }}</td>
+                    <td>{{ $task->content }}</td>
                 </tr>
                 @endforeach
             </tbody>
