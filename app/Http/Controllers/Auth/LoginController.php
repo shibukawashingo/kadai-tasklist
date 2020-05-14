@@ -25,8 +25,9 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+     //ユーザ登録後のリダイレクト先がトップページに変更さ
 
+    protected $redirectTo = '/'; 
     /**
      * Create a new controller instance.
      *
@@ -34,6 +35,8 @@ class LoginController extends Controller
      */
     public function __construct()
     {
+    //ミドルウェアは Controller にアクセスする前に事前に確認される条件
+    // guest とは、ログイン認証されていない閲覧者のことです。つまり「 logout アクション以外ではログイン認証されていないことが必要」
         $this->middleware('guest')->except('logout');
     }
 }
