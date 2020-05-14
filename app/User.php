@@ -26,4 +26,11 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+    //User が持つ Micropost は複数存在するので、 function microposts() のように複数形 microposts でメソッドを定義します。
+    public function tasks()
+    {   
+        //親のモデルでTaskメソッドによりリレーション関数を定義します。
+        return $this->hasMany(Task::class);
+    }   
+    
 }

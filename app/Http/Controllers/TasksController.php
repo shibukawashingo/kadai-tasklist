@@ -15,11 +15,17 @@ class TasksController extends Controller
      */
     public function index() // getでTasks/にアクセスされた場合の「一覧表示処理」
     {
-        $tasks =Task::all();
+       $data = [];
+        if (\Auth::check()) {
+            $user = \Auth::user();
+            $tasks = $user->tasks()->orderBy('created_at', 'desc')->paginate(10);
+            $data = [
+                'user' => $user,
+                'tasks' => $tasks,
+            ];
+        }
+        return view('welcome', $data);
         
-        return view('tasks.index', [
-            'tasks' => $tasks,
-        ]);
     }
 
     /**
@@ -44,19 +50,20 @@ class TasksController extends Controller
      */
     public function store(Request $request) // postでTasks/にアクセスされた場合の「新規登録処理」
     {
-         $this->validate($request, [
-             
+        $this->validate($request, [
             'status' => 'required|max:10',   // 追加
-            'content' => 'required|max:191', //lesoon14課題で追加
-            
+            'content' => 'required|max:191',
         ]);
-        
-        $task = new Task;
-        $task->status = $request->status;    // 追加
-        $task->content = $request->content;
-        $task->save();
+        $request->user()->tasks()->create([
+            'status' => $request->content,
+        ]);
 
-        return redirect('/');
+        $request->user()->tasks()->create([
+            'content' => $request->content,
+        ]);
+
+
+        return back();
     }
 
     /**
@@ -67,12 +74,17 @@ class TasksController extends Controller
      */
     public function show($id) // getで/idにアクセスされた場合の「取得表示処理」
     {
-        $task = Task::find($id);
+        $user = User::find($id);
+        $tasks = $user->tasks()->orderBy('created_at', 'desc')->paginate(10);
 
-        return view('tasks.show', [
-            'task' => $task,
-        ]);
- 
+        $data = [
+            'user' => $user,
+            'tasks' => $tasks,
+        ];
+
+        $data += $this->counts($user);
+
+        return view('users.show', $data);
     }
 
     /**
@@ -82,12 +94,14 @@ class TasksController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit($id)  // getで/id/editにアクセスされた場合の「更新画面表示処理」
-    {
-        $task = Task::find($id);
-
-        return view('tasks.edit', [
-            'task' => $task,
-        ]);
+    {   
+        $task = \App\Task::find($id);
+        
+        if (\Auth::id() === $micropost->user_id) {
+            $micropost->delete();
+        }
+       
+        return back();
     }
 
     /**
@@ -121,9 +135,12 @@ class TasksController extends Controller
      */
     public function destroy($id) // deleteで/idにアクセスされた場合の「削除処理」
     {
-        $task = Task::find($id);
-        $task->delete();
+        $task = \App\Task::find($id);
 
-        return redirect('/');
+        if (\Auth::id() === $task->user_id) {
+            $task->delete();
+        }
+
+        return back();
     }
 }
