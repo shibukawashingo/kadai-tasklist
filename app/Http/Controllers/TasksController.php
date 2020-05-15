@@ -55,7 +55,7 @@ class TasksController extends Controller
             'content' => 'required|max:191',
         ]);
         $request->user()->tasks()->create([
-            'status' => $request->content,
+            'status' => $request->status,
         ]);
 
         $request->user()->tasks()->create([
@@ -97,8 +97,8 @@ class TasksController extends Controller
     {   
         $task = \App\Task::find($id);
         
-        if (\Auth::id() === $micropost->user_id) {
-            $micropost->delete();
+        if (\Auth::id() === $task->user_id) {
+            $task->delete();
         }
        
         return back();
