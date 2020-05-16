@@ -56,14 +56,13 @@ class TasksController extends Controller
         ]);
         $request->user()->tasks()->create([
             'status' => $request->status,
-        ]);
-
-        $request->user()->tasks()->create([
             'content' => $request->content,
         ]);
 
+      
 
-        return back();
+
+        return redirect('/');
     }
 
     /**
@@ -90,7 +89,7 @@ class TasksController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  int  -
      * @return \Illuminate\Http\Response
      */
     public function edit($id)  // getで/id/editにアクセスされた場合の「更新画面表示処理」
@@ -98,11 +97,12 @@ class TasksController extends Controller
         $task = \App\Task::find($id);
         
         if (\Auth::id() === $task->user_id) {
-            $task->delete();
+            
+            return view('tasks.edit', [
+            'task' => $task,
+            ]);
         }
-       
-        return back();
-    }
+      }
 
     /**
      * Update the specified resource in storage.
